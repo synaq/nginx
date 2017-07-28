@@ -638,6 +638,28 @@ ngx_mail_auth_http_process_headers(ngx_mail_session_t *s,
                 continue;
             }
 
+            if (len == sizeof("Auth-Hash") - 1
+                && ngx_strncasecmp(ctx->header_name_start,
+                                   (u_char *) "Auth-Hash",
+                                   sizeof("Auth-Hash") - 1)
+                   == 0)
+            {
+                s->hash.len = ctx->header_end - ctx->header_start;
+
+                s->hash.data = ngx_pnalloc(s->connection->pool,
+                                             s->hash.len);
+                if (s->hash.data == NULL) {
+                    ngx_close_connection(ctx->peer.connection);
+                    ngx_destroy_pool(ctx->pool);
+                    ngx_mail_session_internal_server_error(s);
+                    return;
+                }
+
+                ngx_memcpy(s->hash.data, ctx->header_start, s->hash.len);
+
+                continue;
+            }
+
             if (len == sizeof("Auth-Wait") - 1
                 && ngx_strncasecmp(ctx->header_name_start,
                                    (u_char *) "Auth-Wait",

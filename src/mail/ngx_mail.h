@@ -159,10 +159,15 @@ typedef enum {
     ngx_smtp_auth_external,
     ngx_smtp_helo,
     ngx_smtp_helo_xclient,
+    ngx_smtp_helo_login,
     ngx_smtp_helo_from,
     ngx_smtp_xclient,
     ngx_smtp_xclient_from,
     ngx_smtp_xclient_helo,
+    ngx_smtp_login,
+    ngx_smtp_user,
+    ngx_smtp_passwd_xclient,
+    ngx_smtp_passwd_helo,
     ngx_smtp_from,
     ngx_smtp_to
 } ngx_smtp_state_e;
@@ -205,6 +210,8 @@ typedef struct {
 
     ngx_str_t               login;
     ngx_str_t               passwd;
+
+    ngx_str_t               hash;
 
     ngx_str_t               salt;
     ngx_str_t               tag;
